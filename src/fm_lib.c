@@ -804,6 +804,58 @@ t_Error FM_PCD_MatchTableDelete(t_Handle h_CcNode)
     return E_OK;
 }
 
+t_Error FM_PCD_MatchTableGetKeyStatistics(t_Handle                  h_CcNode,
+                                          uint16_t                  keyIndex,
+                                          t_FmPcdCcKeyStatistics    *p_KeyStatistics)
+{
+    t_Device *p_Dev = (t_Device*) h_CcNode;
+    ioc_fm_pcd_cc_tbl_get_stats_t params;
+    t_Device *p_PcdDev = NULL;
+
+    ASSERT_COND(sizeof(t_FmPcdCcKeyStatistics) == sizeof(ioc_fm_pcd_cc_key_statistics_t));
+    SANITY_CHECK_RETURN_ERROR(p_Dev, E_INVALID_HANDLE);
+
+    _fml_dbg("Calling...\n");
+
+    p_PcdDev = (t_Device *)p_Dev->h_UserPriv;
+
+    params.id = UINT_TO_PTR(p_Dev->id);
+    params.key_index = keyIndex;
+    if (ioctl(p_PcdDev->fd, FM_PCD_IOC_MATCH_TABLE_GET_KEY_STAT, &params))
+        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
+
+    memcpy(p_KeyStatistics, &params.statistics, sizeof(t_FmPcdCcKeyStatistics));
+
+    _fml_dbg("Called.\n");
+
+    return E_OK;
+}
+
+t_Error FM_PCD_MatchTableGetMissStatistics(t_Handle                  h_CcNode,
+                                           t_FmPcdCcKeyStatistics    *p_MissStatistics)
+{
+    t_Device *p_Dev = (t_Device*) h_CcNode;
+    ioc_fm_pcd_cc_tbl_get_stats_t params;
+    t_Device *p_PcdDev = NULL;
+
+    ASSERT_COND(sizeof(t_FmPcdCcKeyStatistics) == sizeof(ioc_fm_pcd_cc_key_statistics_t));
+    SANITY_CHECK_RETURN_ERROR(p_Dev, E_INVALID_HANDLE);
+
+    _fml_dbg("Calling...\n");
+
+    p_PcdDev = (t_Device *)p_Dev->h_UserPriv;
+
+    params.id = UINT_TO_PTR(p_Dev->id);
+    if (ioctl(p_PcdDev->fd, FM_PCD_IOC_MATCH_TABLE_GET_MISS_STAT, &params))
+        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
+
+    memcpy(p_MissStatistics, &params.statistics, sizeof(t_FmPcdCcKeyStatistics));
+
+    _fml_dbg("Called.\n");
+
+    return E_OK;
+}
+
 t_Error FM_PCD_CcRootModifyNextEngine(t_Handle                  h_CcTree,
                                       uint8_t                   grpId,
                                       uint8_t                   index,
@@ -1164,6 +1216,30 @@ t_Error FM_PCD_MatchTableModifyKey(t_Handle h_CcNode,
     return E_OK;
 }
 
+t_Error FM_PCD_HashTableGetMissStatistics(t_Handle                  h_CcNode,
+                                          t_FmPcdCcKeyStatistics    *p_MissStatistics)
+{
+    t_Device *p_Dev = (t_Device*) h_CcNode;
+    ioc_fm_pcd_cc_tbl_get_stats_t params;
+    t_Device *p_PcdDev = NULL;
+
+    ASSERT_COND(sizeof(t_FmPcdCcKeyStatistics) == sizeof(ioc_fm_pcd_cc_key_statistics_t));
+    SANITY_CHECK_RETURN_ERROR(p_Dev, E_INVALID_HANDLE);
+
+    _fml_dbg("Calling...\n");
+
+    p_PcdDev = (t_Device*)p_Dev->h_UserPriv;
+
+    params.id = UINT_TO_PTR(p_Dev->id);
+    if (ioctl(p_PcdDev->fd, FM_PCD_IOC_HASH_TABLE_GET_MISS_STAT, &params))
+        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
+
+    memcpy(p_MissStatistics, &params.statistics, sizeof(t_FmPcdCcKeyStatistics));
+
+    _fml_dbg("Called.\n");
+
+    return E_OK;
+}
 
 t_Handle FM_PCD_PlcrProfileSet(t_Handle h_FmPcd, t_FmPcdPlcrProfileParams *p_Profile)
 {
