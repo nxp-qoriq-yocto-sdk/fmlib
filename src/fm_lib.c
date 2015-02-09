@@ -592,7 +592,9 @@ t_Handle FM_PCD_KgSchemeSet (t_Handle h_FmPcd, t_FmPcdKgSchemeParams *p_Scheme)
 
     memset(p_Dev, 0, sizeof(t_Device));
     p_Dev->h_UserPriv = (t_Handle)p_PcdDev;
-    p_PcdDev->owners++;
+    /* increase owners only if a new scheme is created */
+    if (params.modify == FALSE)
+	    p_PcdDev->owners++;
     p_Dev->id = PTR_TO_UINT(params.id);
 
     _fml_dbg("Called.\n");
