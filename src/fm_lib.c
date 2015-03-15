@@ -2130,6 +2130,26 @@ t_Error FM_MAC_GetStatistics (t_Handle h_FmMac, t_FmMacStatistics *p_Statistics)
     return E_OK;
 }
 
+t_Error FM_PORT_GetBmiCounters (t_Handle h_FmPort, t_FmPortBmiStats *p_BmiStats)
+{
+    t_Device    *p_Dev = (t_Device*) h_FmPort;
+    ioc_fm_port_bmi_stats_t *param;
+
+    param = (ioc_fm_port_bmi_stats_t *)p_BmiStats;
+
+    SANITY_CHECK_RETURN_VALUE(p_Dev, E_INVALID_HANDLE, E_OK);
+    SANITY_CHECK_RETURN_VALUE(param, E_INVALID_HANDLE, E_OK);
+
+    _fml_dbg("Calling...\n");
+
+    if (ioctl(p_Dev->fd, FM_PORT_IOC_GET_BMI_COUNTERS, param))
+        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
+
+    _fml_dbg("Called.\n");
+
+    return E_OK;
+}
+
 t_Error FM_PORT_ConfigBufferPrefixContent(t_Handle h_FmPort, t_FmBufferPrefixContent *p_Params)
 {
     t_Device    *p_Dev = (t_Device*) h_FmPort;
