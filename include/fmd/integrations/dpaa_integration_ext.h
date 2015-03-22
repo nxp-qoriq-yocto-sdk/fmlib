@@ -40,8 +40,10 @@
 
 #ifdef P1023
 #include "dpaa_integration_P1023.h"
-#elif defined B4860 || defined T4240
+#elif defined FMAN_V3H
 #include "dpaa_integration_B4_T4.h"
+#elif defined FMAN_V3L
+#include "dpaa_integration_FMAN_V3L.h"
 #else
 #include "dpaa_integration_P3_P4_P5.h"
 #endif

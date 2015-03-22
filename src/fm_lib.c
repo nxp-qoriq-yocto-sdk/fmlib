@@ -2395,8 +2395,12 @@ t_Error FM_CtrlMonGetCounters(t_Handle h_Fm, uint8_t fmCtrlIndex, t_FmCtrlMon *p
 void Platform_is_P1023()
 {
 }
-#elif defined B4860 || defined T4240
-void Platform_is_B4860_T4240()
+#elif defined FMAN_V3H
+void Platform_is_FMAN_V3H()
+{
+}
+#elif defined FMAN_V3L
+void Platform_is_FMAN_V3L()
 {
 }
 #else
