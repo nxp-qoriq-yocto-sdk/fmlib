@@ -1906,23 +1906,6 @@ t_Error FM_PORT_PcdKgUnbindSchemes (t_Handle h_FmPort, t_FmPcdPortSchemesParams 
     return E_OK;
 }
 
-t_Error FM_PORT_PcdPrsModifyStartOffset (t_Handle h_FmPort, t_FmPcdPrsStart *p_FmPcdPrsStart)
-{
-    t_Device *p_Dev = (t_Device*) h_FmPort;
-
-    ASSERT_COND(sizeof(t_FmPcdPrsStart) == sizeof(ioc_fm_pcd_prs_start_t));
-    SANITY_CHECK_RETURN_ERROR(p_Dev, E_INVALID_HANDLE);
-
-    _fml_dbg("Calling...\n");
-
-    if (ioctl(p_Dev->fd, FM_PORT_IOC_PCD_PRS_MODIFY_START_OFFSET, p_FmPcdPrsStart))
-        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
-
-    _fml_dbg("Called.\n");
-
-    return E_OK;
-}
-
 t_Error FM_PCD_SetAdvancedOffloadSupport(t_Handle h_FmPort)
 {
     t_Device    *p_Dev = (t_Device *)h_FmPort;
