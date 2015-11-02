@@ -627,6 +627,28 @@ t_Error FM_PCD_KgSchemeDelete(t_Handle h_Scheme)
     return E_OK;
 }
 
+uint32_t FM_PCD_KgSchemeGetCounter(t_Handle h_Scheme)
+{
+    t_Device *p_Dev = (t_Device*) h_Scheme;
+    t_Device *p_PcdDev = NULL;
+    ioc_fm_pcd_kg_scheme_spc_t params;
+
+    SANITY_CHECK_RETURN_ERROR(p_Dev, E_INVALID_HANDLE);
+
+    _fml_dbg("Calling...\n");
+
+    p_PcdDev =  (t_Device *)p_Dev->h_UserPriv;
+    params.id = UINT_TO_PTR(p_Dev->id);
+
+    if (ioctl(p_PcdDev->fd, FM_PCD_IOC_KG_SCHEME_GET_CNTR, &params)){
+        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
+    }
+
+    _fml_dbg("Called.\n");
+
+    return params.val;
+}
+
 t_Handle FM_PCD_CcRootBuild(t_Handle h_FmPcd, t_FmPcdCcTreeParams *p_PcdTreeParam)
 {
     t_Device *p_PcdDev = (t_Device*) h_FmPcd;
