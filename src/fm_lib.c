@@ -1442,6 +1442,31 @@ t_Error  FM_PCD_ManipNodeDelete(t_Handle h_HdrManipNode)
 
     return E_OK;
 }
+
+t_Error FM_PCD_ManipGetStatistics(t_Handle h_ManipNode, t_FmPcdManipStats *p_FmPcdManipStats)
+{
+    t_Device *p_Dev = (t_Device*) h_ManipNode;
+    t_Device *p_PcdDev = NULL;
+    ioc_fm_pcd_manip_get_stats_t params;
+
+    ASSERT_COND(sizeof(t_FmPcdManipStats) == sizeof(ioc_fm_pcd_manip_stats_t));
+    SANITY_CHECK_EXIT(p_Dev, E_INVALID_HANDLE);
+
+    _fml_dbg("Calling...\n");
+
+    p_PcdDev = (t_Device*)p_Dev->h_UserPriv;
+
+    params.id = UINT_TO_PTR(p_Dev->id);
+    if (ioctl(p_PcdDev->fd, FM_PCD_IOC_MANIP_GET_STATS, &params))
+        RETURN_ERROR(MINOR, E_INVALID_OPERATION, NO_MSG);
+
+    memcpy(p_FmPcdManipStats, &params.stats, sizeof(t_FmPcdManipStats));
+
+    _fml_dbg("Called.\n");
+
+    return E_OK;
+}
+
 #ifdef FM_CAPWAP_SUPPORT
 #error CAPWAP feature not supported
 #endif
